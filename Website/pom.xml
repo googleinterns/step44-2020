@@ -45,7 +45,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>madelinecuozzo-step-2020</deploy.projectId>
+          <deploy.projectId>capstone-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
