@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.ServerStats;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Date;
@@ -23,15 +22,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/Mock-Data")
-public final class ServerStatsServlet extends HttpServlet {
+@WebServlet("/MockData")
+public final class MockDataServlet extends HttpServlet {
 
   private final String greeting= "hello world";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    String json = convertToJson(greeting);
+    String json = convertToJson("hello world");
 
     // Send the JSON as the response
     response.setContentType("application/json;");
@@ -41,7 +40,7 @@ public final class ServerStatsServlet extends HttpServlet {
   /**
    * Converts a ServerStats instance into a JSON string using manual String concatentation.
    */
-  private String convertToJson(String) {
+  private String convertToJson(String greeting) {
     String json = "{";
     json += "\"greeting\": ";
     json += "\"" + greeting+ "\"";
