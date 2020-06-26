@@ -15,13 +15,15 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.LatLng;
-//import com.google.maps.model.PlacesSearchResponse;
+import com.google.maps.model.PlacesSearchResponse;
 import com.google.maps.model.PlaceDetails;
 import com.google.maps.PlacesApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GaeRequestHandler;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,30 +34,33 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchRequestServlet extends HttpServlet {
 
   private GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-    .apiKey("<PasteAPIKEYHere>")
+    .apiKey("<insertAPIKeyHere>")
     .build();
-  private static final String GOOGLE_SYDNEY = "ChIJN1t_tDeuEmsRUsoyG83frY4";
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGET(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      PlaceDetails placeDetails = PlacesApi.placeDetails(context, GOOGLE_SYDNEY).await();
+      String query = request.getParameter("query");
+      PlacesSearchResponse apiResponse = PlacesApi.textSearchQuery(context,query).await();
 
-      String json = convertToJsonUsingGson(placeDetails);
+
+      String json = convertToJsonUsingGson(apiResponse);
 
       response.setContentType("application/json;");
       response.setCharacterEncoding("UTF-8");
       response.getWriter().println(json);
 
     } catch (Exception e) {
-        // Handle error
+        e.printStackTrace();
     }
   }
+  
 
-  private String convertToJsonUsingGson(PlaceDetails response) {
+  private <T> String convertToJsonUsingGson(T response) {
     Gson gson = new Gson();
 
-    String json = gson.toJson(response, PlaceDetails.class);
+    Type typeOfT = new TypeToken<T>(){}.getType();
+    String json = gson.toJson(response, typeOfT);
     return json;
   }
 }
