@@ -15,8 +15,6 @@
 
 package com.google.sps.servlets;
 
-import static com.google.maps.LocalTestServerContext;
-import static com.google.maps.TestUtils.retrieveBody;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
-@RunWith(JUnit4.class)
-public final class SearchRequestSevletTest  extends Mockito {
+
+public final class SearchRequestSevletTest {
   
 }
