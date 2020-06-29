@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import java.util.Random;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -41,15 +42,17 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      int cntr = 0;
+    for (int i = 0; i < 10; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("id", 0);
+    restaurantEntity.setProperty("id", cntr);
     restaurantEntity.setProperty("timestamp", timestamp);
-    restaurantEntity.setProperty("openOrderVolume", 8);
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    restaurantEntity.setProperty("openOrderVolume", getRandom());
     datastore.put(restaurantEntity);
-
+    cntr++;
+    }
     Query query = new Query("Restaurant").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
@@ -68,14 +71,11 @@ public final class MockDataServlet extends HttpServlet {
   }
 
   /**
-   * Converts a ServerStats instance into a JSON string using manual String concatentation.
+   * gets a random number between 0 and 20 for openOrderVolume
    */
-  private String convertToJson(String greeting) {
-    String json = "{";
-    json += "\"greeting\": ";
-    json += "\"" + greeting+ "\"";
-    json += "}";
-    return json;
+  private int getRandom() {
+    int rand = (int)Math.random() *21;
+    return rand;
   }
 
 }
