@@ -24,6 +24,8 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import java.util.ArrayList;
+import java.util.Arrays;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Date;
@@ -39,12 +41,30 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    String json = convertToJson("hello world");
+    Entity restaurantEntity = new Entity("Restaurant");
+    long timestamp = System.currentTimeMillis();
+    restaurantEntity.setProperty("id", 0);
+    restaurantEntity.setProperty("timestamp", timestamp);
+    restaurantEntity.setProperty("openOrderVolume", 8);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(restaurantEntity);
+
+    Query query = new Query("Restaurant").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    Gson gson = new Gson();
+    ArrayList<String> restaurants = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+         int id = (int) entity.getProperty("id");
+       int orderVolume = (int) entity.getProperty("openOrderVolume");
+       String message = id + " : " + orderVolume;      
+      restaurants.add(message); 
+      }
 
     // Send the JSON as the response
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(restaurants));
   }
 
   /**
