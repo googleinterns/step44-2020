@@ -15,19 +15,52 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.PlacesSearchResponse;
+import com.google.maps.model.PlaceDetails;
+import com.google.maps.PlacesApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GaeRequestHandler;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns some example content.*/
 @WebServlet("/searchRequest")
 public class SearchRequestServlet extends HttpServlet {
 
+  private GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
+    .apiKey("<insertAPIKeyHere>")
+    .build();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello world!</h1>");
+    try {
+      String query = request.getParameter("query");
+      PlacesSearchResponse apiResponse = PlacesApi.textSearchQuery(context,query).await();
+
+
+      String json = convertToJsonUsingGson(apiResponse);
+
+      response.setContentType("application/json;");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().println(json);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+  
+
+  private <T> String convertToJsonUsingGson(T response) {
+    Gson gson = new Gson();
+
+    Type typeOfT = new TypeToken<T>(){}.getType();
+    String json = gson.toJson(response, typeOfT);
+    return json;
   }
 }
