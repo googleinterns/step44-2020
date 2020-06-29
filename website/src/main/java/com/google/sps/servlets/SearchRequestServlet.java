@@ -38,7 +38,7 @@ public class SearchRequestServlet extends HttpServlet {
     .build();
 
   @Override
-  public void doGET(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       String query = request.getParameter("query");
       PlacesSearchResponse apiResponse = PlacesApi.textSearchQuery(context,query).await();
