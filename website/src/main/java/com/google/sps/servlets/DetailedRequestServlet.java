@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import static com.google.sps.utility.Utility.convertToJsonUsingGson;
 
-import com.google.maps.model.PlacesSearchResponse;
+import com.google.maps.model.PlaceDetails;
 import com.google.maps.PlacesApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GaeRequestHandler;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content.*/
-@WebServlet("/searchRequest")
-public class SearchRequestServlet extends HttpServlet {
+@WebServlet("/detailedRequest")
+public class DetailedRequestServlet extends HttpServlet {
 
   private GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
     .apiKey("<insertAPIKeyHere>")
@@ -37,9 +37,8 @@ public class SearchRequestServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      String query = request.getParameter("query");
-      PlacesSearchResponse apiResponse = PlacesApi.textSearchQuery(context,query).await();
-
+      String PlaceID = request.getParameter("placeID");
+      PlaceDetails apiResponse = PlacesApi.placeDetails(context, PlaceID).await();
 
       String json = convertToJsonUsingGson(apiResponse);
 
