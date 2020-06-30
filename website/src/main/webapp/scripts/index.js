@@ -1,3 +1,12 @@
+async function getRestaurants(query) {
+  fetch('/searchRequest?query=tacos+in+new+york')
+    .then(response => response.json())
+    .then((restaurants) => {
+      restaurants["results"].forEach((restaurant) => {
+        console.log(restaurant["name"]);
+      })
+    });
+}
 
 async function getVolumeData() {
   fetch('/MockData')
@@ -7,15 +16,4 @@ async function getVolumeData() {
         console.log(restaurant);
       })
     });
-}
-
-async function testing() {
-  console.log("starting test");
-
-  const response = await fetch('/searchRequest');
-  const testResults = await response.text();
-  console.log(testResults);
-  document.getElementById('testResults').innerText = testResults;
-
-  console.log("test ran");
 }
