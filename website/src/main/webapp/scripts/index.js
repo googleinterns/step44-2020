@@ -1,4 +1,15 @@
-async function testing(){
+
+async function getVolumeData() {
+  fetch('/MockData')
+    .then(response => response.json())
+    .then((restaurantVolumeData) => {
+      restaurantVolumeData.forEach((restaurant) => {
+        console.log(restaurant);
+      })
+    });
+}
+
+async function testing() {
   console.log("starting test");
 
   const response = await fetch('/searchRequest');
