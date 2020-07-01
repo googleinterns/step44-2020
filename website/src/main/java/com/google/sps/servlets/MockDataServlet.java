@@ -58,7 +58,7 @@ public final class MockDataServlet extends HttpServlet {
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-        long id = entity.getProperty("idNum");
+        int id = (int)entity.getProperty("idNum");
        int orderVolume = (int) entity.getProperty("openOrderVolume");
        String message = id + " : " + orderVolume;      
       restaurants.add(message); 
