@@ -10,5 +10,11 @@
 	<title> Queue </title>
 </head>
 
-<body onload="getRestaurants();">
+<body>
+	<form>
+		<label for="search">Queue</label><br>
+		<input type="text" id="search" name="search" value=""><br>
+		<input type="button" value="Submit"
+    onclick="getQueue(document.getElementById('search').value)" />
+  </form>
 </body>
