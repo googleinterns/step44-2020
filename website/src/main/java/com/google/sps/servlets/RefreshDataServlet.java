@@ -35,25 +35,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/MockData")
-public final class MockDataServlet extends HttpServlet {
-
+@WebServlet("/RefreshData")
+public final class RefreshDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      int cntr = 0;
-    for (int i = 0; i < 10; i++){
-    Entity restaurantEntity = new Entity("Restaurant");
-    long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("id", cntr);
-    restaurantEntity.setProperty("timestamp", timestamp);
-    restaurantEntity.setProperty("openOrderVolume", getRandom());
-    datastore.put(restaurantEntity);
-    cntr++;
-    }
-    Query query = new Query("Restaurant").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Restaurant").addSort("id", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+        long timestamp = System.currentTimeMillis();
+        entity.setProperty("timestamp", timestamp);
+        int newOrderVolume = (int) entity.getProperty("openOrderVolume");
+        newOrderVolume+=getRandomChange();
+        entity.setProperty("openOrderVolume", newOrderVolume);
+        datastore.put(entity);
+    }
+    
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
@@ -72,9 +70,13 @@ public final class MockDataServlet extends HttpServlet {
   /**
    * gets a random number between 0 and 20 for openOrderVolume
    */
-  private int getRandom() {
-    int rand = (int)(Math.random() *21);
-    return rand;
+  private int getRandomChange() {
+    
+    int rand = (int)Math.random() *1;
+    if(rand==0){
+        return -1;
+    }
+        return 1;
   }
 
   
