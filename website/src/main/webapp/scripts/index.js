@@ -1,11 +1,11 @@
-async function getRestaurants(query) {
-  fetch('/searchRequest?query=tacos+in+new+york')
+async function getQueue(query) {
+  const restaurants = await fetch('/searchRequest?query=' + query)
     .then(response => response.json())
-    .then((restaurants) => {
-      restaurants["results"].forEach((restaurant) => {
-        console.log(restaurant["name"]);
-      })
+    .then((restaurantsData) => {
+      return restaurantsData["results"];
     });
+
+  console.log(restaurants);
 }
 
 async function getVolumeData() {
