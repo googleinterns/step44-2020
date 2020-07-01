@@ -46,7 +46,7 @@ public final class MockDataServlet extends HttpServlet {
     for (int i = 0; i < 10; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("id", cntr);
+    restaurantEntity.setProperty("idNum", cntr);
     restaurantEntity.setProperty("timestamp", timestamp);
     restaurantEntity.setProperty("openOrderVolume", getRandom());
     datastore.put(restaurantEntity);
@@ -58,7 +58,7 @@ public final class MockDataServlet extends HttpServlet {
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-         int id = (int) entity.getProperty("id");
+        int id = (int) entity.getProperty("idNum");
        int orderVolume = (int) entity.getProperty("openOrderVolume");
        String message = id + " : " + orderVolume;      
       restaurants.add(message); 
