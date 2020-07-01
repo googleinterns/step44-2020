@@ -52,7 +52,7 @@ public final class MockDataServlet extends HttpServlet {
     datastore.put(restaurantEntity);
     cntr++;
     }
-    Query query = new Query("Restaurant").addSort("id", SortDirection.ASCENDING);
+    Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     Gson gson = new Gson();
