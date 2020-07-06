@@ -41,28 +41,30 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      int cntr = 0;
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    int cntr = 0;
+
     for (int i = 0; i < 10; i++){
-    Entity restaurantEntity = new Entity("Restaurant");
-    long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("idNum", cntr);
-    restaurantEntity.setProperty("timestamp", timestamp);
-    restaurantEntity.setProperty("openOrderVolume", getRandom());
-    datastore.put(restaurantEntity);
-    cntr++;
+      Entity restaurantEntity = new Entity("Restaurant");
+      long timestamp = System.currentTimeMillis();
+      restaurantEntity.setProperty("idNum", cntr);
+      restaurantEntity.setProperty("timestamp", timestamp);
+      restaurantEntity.setProperty("openOrderVolume", getRandom());
+      datastore.put(restaurantEntity);
+      cntr++;
     }
+
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-        int id = (int)entity.getProperty("idNum");
-       int orderVolume = (int) entity.getProperty("openOrderVolume");
-       String message = id + " : " + orderVolume;      
+      int id = (int)entity.getProperty("idNum");
+      int orderVolume = (int) entity.getProperty("openOrderVolume");
+      String message = id + " : " + orderVolume;      
       restaurants.add(message); 
-      }
+    }
 
     // Send the JSON as the response
     response.setContentType("application/json;");
