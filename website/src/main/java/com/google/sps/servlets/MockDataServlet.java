@@ -41,6 +41,7 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+<<<<<<< HEAD
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int cntr = 0;
 
@@ -54,14 +55,27 @@ public final class MockDataServlet extends HttpServlet {
       cntr++;
     }
 
+=======
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+     /* int cntr = 0;
+    for (int i = 0; i < 20; i++){
+    Entity restaurantEntity = new Entity("Restaurant");
+    long timestamp = System.currentTimeMillis();
+    restaurantEntity.setProperty("idNum", cntr);
+    restaurantEntity.setProperty("timestamp", timestamp);
+    restaurantEntity.setProperty("openOrderVolume", getRandom());
+    datastore.put(restaurantEntity);
+    cntr++;
+    }*/
+>>>>>>> 88c0affac486f4374fd5cd965d5020ac804b936d
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      int id = (int)entity.getProperty("idNum");
-      int orderVolume = (int) entity.getProperty("openOrderVolume");
+      long id = (long)entity.getProperty("idNum");
+      long orderVolume = (long) entity.getProperty("openOrderVolume");
       String message = id + " : " + orderVolume;      
       restaurants.add(message); 
     }
@@ -75,8 +89,9 @@ public final class MockDataServlet extends HttpServlet {
    * gets a random number between 0 and 20 for openOrderVolume
    */
   private int getRandom() {
-    int rand = (int)(Math.random() *21);
-    return rand;
+    Random rand = new Random();
+    int r = rand.nextInt(21);
+    return r;
   }
 
   
