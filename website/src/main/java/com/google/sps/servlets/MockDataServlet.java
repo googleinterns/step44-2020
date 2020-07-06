@@ -41,22 +41,7 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-<<<<<<< HEAD
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    int cntr = 0;
-
-    for (int i = 0; i < 10; i++){
-      Entity restaurantEntity = new Entity("Restaurant");
-      long timestamp = System.currentTimeMillis();
-      restaurantEntity.setProperty("idNum", cntr);
-      restaurantEntity.setProperty("timestamp", timestamp);
-      restaurantEntity.setProperty("openOrderVolume", getRandom());
-      datastore.put(restaurantEntity);
-      cntr++;
-    }
-
-=======
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
      /* int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
@@ -67,7 +52,7 @@ public final class MockDataServlet extends HttpServlet {
     datastore.put(restaurantEntity);
     cntr++;
     }*/
->>>>>>> 88c0affac486f4374fd5cd965d5020ac804b936d
+    
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
 
