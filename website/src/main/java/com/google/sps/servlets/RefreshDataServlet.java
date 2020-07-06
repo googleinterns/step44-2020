@@ -41,7 +41,7 @@ public final class RefreshDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Restaurant").addSort("id", SortDirection.ASCENDING);
+    Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
         long timestamp = System.currentTimeMillis();
@@ -56,7 +56,7 @@ public final class RefreshDataServlet extends HttpServlet {
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-         int id = (int) entity.getProperty("id");
+         int id = (int) entity.getProperty("idNUm");
        int orderVolume = (int) entity.getProperty("openOrderVolume");
        String message = id + " : " + orderVolume;      
       restaurants.add(message); 
@@ -72,11 +72,17 @@ public final class RefreshDataServlet extends HttpServlet {
    */
   private int getRandomChange() {
     
-    int rand = (int)Math.random() *1;
+    Random r = new Random();
+     r.setSeed(5); 
+     int rand = r.nextInt(3);
+  
     if(rand==0){
+        return 0;
+    }
+    if(rand ==1){
         return -1;
     }
-        return 1;
+    return 1;
   }
 
   
