@@ -41,7 +41,7 @@ public final class MockDataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
      /* int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
@@ -52,17 +52,18 @@ public final class MockDataServlet extends HttpServlet {
     datastore.put(restaurantEntity);
     cntr++;
     }*/
+    
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-        long id = (long)entity.getProperty("idNum");
-       long orderVolume = (long) entity.getProperty("openOrderVolume");
-       String message = id + " : " + orderVolume;      
+      long id = (long)entity.getProperty("idNum");
+      long orderVolume = (long) entity.getProperty("openOrderVolume");
+      String message = id + " : " + orderVolume;      
       restaurants.add(message); 
-      }
+    }
 
     // Send the JSON as the response
     response.setContentType("application/json;");
