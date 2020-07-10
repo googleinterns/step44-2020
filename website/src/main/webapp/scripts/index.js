@@ -16,6 +16,18 @@ async function getQueue(query) {
   console.log(restaurants);
   console.log(volumeData);
 
+  const results = document.getElementById('results');
+
+  restaurants.forEach((restaurant) => {
+    console.log(restaurant['name']);
+    console.log(restaurant['formattedAddress']);
+    console.log(restaurant['rating']);
+
+    results.innerHTML += '<div class="card" style="width: 18rem;"> <div class="card-body"><h5 class="card-title">' +
+      restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">' + restaurant['formattedAddress']
+      + '</h6><p class="card-text">' + restaurant['rating'] + '</p></div></div>';
+  });
+
 }
 
 async function getRestaurants(query) {
