@@ -15,15 +15,30 @@
 
 package com.google.sps.utility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import com.google.sps.TestUtils;
 
 import org.junit.Test;
 
 
 public final class UtilityTest {
+
+  private final String placesApiPizzaInNewYork;
+  private final String servletPlacesApiPizzaInNewYork;
+  private final String placeDetailResponseBody;
+  private final String servletPlaceDetailResponseBody;
+  
+  
+  public UtilityTest(){
+
+    placesApiPizzaInNewYork = TestUtils.retrieveBody("/PlacesApiPizzaInNewYorkResponse.json");
+
+    placeDetailResponseBody = TestUtils.retrieveBody("/PlaceDetailsResponse.json");
+
+    servletPlaceDetailResponseBody = TestUtils.retrieveBody("/ServletPlaceDetailsResponse.txt");
+
+    servletPlacesApiPizzaInNewYork = TestUtils.retrieveBody("/ServletPlacesApiPizzaInNewYorkResponse.txt");
+  }
+
   
 }

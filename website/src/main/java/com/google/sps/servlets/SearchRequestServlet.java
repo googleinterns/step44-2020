@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/searchRequest")
 public class SearchRequestServlet extends HttpServlet {
 
-  private GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
+  protected GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
     .apiKey("<insertAPIKeyHere>")
     .build();
 
