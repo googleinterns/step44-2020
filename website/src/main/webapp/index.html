@@ -18,7 +18,7 @@
 	<title>Queue</title>
 </head>
 
-<body class="text-center">
+<body>
 	<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
 		<header class="masthead mb-auto">
 		</header>
@@ -27,12 +27,12 @@
 			<h1 class="cover-heading">Queue</h1>
 			<form>
 				<label for="search">Queue</label><br>
-				<input type="text" id="search" name="search" value=""><br>
+				<input type="text" id="search" name="search" value=""><br></input>
 				<input type="button" value="Submit"
-        onclick="getQueue(document.getElementById('search').value)" />
-      </form>
-				<div id="results">
-				</div>
+					onclick="getQueue(document.getElementById('search').value)" /></input>
+			</form>
+			<div id="results">
+			</div>
 		</main>
 		<footer class="mastfoot mt-auto">
 			<div class="inner">
