@@ -26,6 +26,7 @@ import com.google.sps.LocalTestServerContext;
 import com.google.sps.TestUtils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +41,9 @@ public final class DetailedRequestSevletTest {
 
 
   private final String placeDetailResponseBody;
+  private final ArrayList<String> multiplePlaceDetailsResponseBody = new ArrayList<String>();
   private final String servletPlaceDetailResponseBody;
+  private final String servletMultiplePlaceDetailsResponseBody;
   
   
 
@@ -49,6 +52,13 @@ public final class DetailedRequestSevletTest {
     placeDetailResponseBody = TestUtils.retrieveBody("/PlaceDetailsResponse.json");
 
     servletPlaceDetailResponseBody = TestUtils.retrieveBody("/ServletPlaceDetailsResponse.txt");
+
+    servletMultiplePlaceDetailsResponseBody = TestUtils.retrieveBody("/ServletMultiplePlaceDetailsResponseBody.txt");
+
+    for(int i = 0; i < 3; i++){
+      multiplePlaceDetailsResponseBody.add(placeDetailResponseBody);
+    }
+
   }
 
   class DetailedRequestSevletTester extends DetailedRequestServlet {
@@ -81,4 +91,29 @@ public final class DetailedRequestSevletTest {
     }
   }
   
+  @Test
+  public void testMultiplePlaceDetailsRequests() throws Exception {
+    try (LocalTestServerContext sc = new LocalTestServerContext(multiplePlaceDetailsResponseBody)) {
+      HttpServletRequest request = mock(HttpServletRequest.class);       
+      HttpServletResponse response = mock(HttpServletResponse.class);    
+
+      when(request.getParameter("placeID")).thenReturn("AILJFakePlaceID0-AILJFakePlaceID1-AILJFakePlaceID2");
+
+      StringWriter stringWriter = new StringWriter();
+      PrintWriter writer = new PrintWriter(stringWriter);
+      when(response.getWriter()).thenReturn(writer);
+
+      new DetailedRequestSevletTester(sc.context).doGet(request, response);
+
+      verify(request, atLeast(1)).getParameter("placeID");
+
+      writer.flush();
+
+      System.out.println(servletMultiplePlaceDetailsResponseBody);
+
+      System.out.println(stringWriter.toString());
+
+      assertTrue(stringWriter.toString().contains(servletMultiplePlaceDetailsResponseBody));
+    }
+  }
 }
