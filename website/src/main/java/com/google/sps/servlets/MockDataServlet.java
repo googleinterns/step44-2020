@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import java.util.Random;
+import java. util. Collections;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -61,13 +62,14 @@ public final class MockDataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       long id = (long)entity.getProperty("idNum");
       long orderVolume = (long) entity.getProperty("openOrderVolume");
-      String message = id + " : " + orderVolume;      
+      String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
     }
 
     // Send the JSON as the response
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(restaurants));
+    java.lang.System.out.println(gson.toJson(restaurants));
   }
 
   /**
