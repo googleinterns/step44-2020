@@ -24,12 +24,10 @@
 		</header>
 
 		<main role="main" class="inner cover">
-			<h1 class="cover-heading">Queue</h1>
-			<form>
-				<label for="search">Queue</label><br>
-				<input type="text" id="search" name="search" value=""><br></input>
-				<input type="button" value="Submit"
-					onclick="getQueue(document.getElementById('search').value)" /></input>
+			<h1 class="cover-heading text-center">Queue</h1>
+			<form class="form-inline d-flex justify-content-center">
+				<input class="form-control" type="text" placeholder="Search" aria-label="Search" id="search">
+				<i class="fa fa-search" aria-hidden="true" onclick="getQueue(document.getElementById('search').value)"></i>
 			</form>
 			<div id="results">
 			</div>
