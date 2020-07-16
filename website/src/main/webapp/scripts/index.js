@@ -26,13 +26,7 @@ async function getQueue(query) {
 
     lineLength = buildLine(volumeDataIndex, color);
 
-    console.log(lineLength)
-
-    results.innerHTML += '<div class="m-1 card"><div class="card-body"><h5 class="card-title">'
-      + restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">'
-      + restaurant['formattedAddress'] + '</h6><p class="card-text">'
-      + stars + '</p><a href="#" class="card-link">' + lineLength
-      + '<i class="fa fa-angle-down"></i></a></div></div>';
+    results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength);
 
     volumeDataIndex++;
   });
@@ -95,4 +89,13 @@ function buildLine(volumeData, color) {
   line += "</div>";
 
   return line;
+}
+
+function buildRestaurantCard(restaurant, stars, lineLength) {
+  return '<div class="m-1 card"><div class="card-body"><h5 class="card-title">'
+    + restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">'
+    + restaurant['formattedAddress'] + '</h6><p class="card-text">'
+    + stars + '</p><a href="#" class="card-link">' + lineLength
+    + '<i class="fa fa-angle-down"></i></a></div></div>';
+
 }
