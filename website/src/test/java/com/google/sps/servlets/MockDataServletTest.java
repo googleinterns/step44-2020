@@ -64,8 +64,7 @@ public final class MockDataServletTest {
     
     public MockDataServletTester(){
     
-    Datastore datastore = mock(DatastoreService.class);
-    results = mock(PreparedQuery.class);
+    datastore = mock(DatastoreService.class);
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
@@ -83,7 +82,7 @@ public final class MockDataServletTest {
     
       HttpServletRequest request = mock(HttpServletRequest.class)       ;
       HttpServletResponse response = mock(HttpServletResponse.class);    
-    
+      PreparedQuery results = mock(PreparedQuery.class);
 
       when(datastore.prepare()).thenReturn(results);
       when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
