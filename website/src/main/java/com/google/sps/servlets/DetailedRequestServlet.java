@@ -16,12 +16,14 @@ package com.google.sps.servlets;
 
 import static com.google.sps.utility.Utility.convertToJsonUsingGson;
 
+import com.google.appengine.api.ThreadManager;
 import com.google.maps.model.PlaceDetails;
 import com.google.maps.PlacesApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GaeRequestHandler;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -30,7 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask; 
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit ;
+import java.util.concurrent.ThreadFactory;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,39 +53,37 @@ public class DetailedRequestServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String rawPlaceIDs = request.getParameter("placeID");
+
+    placeIDs.clear();
+    places.clear();
+
+    String rawPlaceIDs = request.getParameter("placeID"); 
 
     getPlaceIDFromString(rawPlaceIDs);
-    System.out.println("PlaceIDs");
-    System.out.println(placeIDs);
 
     populatePlaceDetails();
-    System.out.println("Places");
-    System.out.println(places);
-    System.out.println(places.size());
 
     String json = convertToJsonUsingGson(places);
 
     response.setContentType("application/json;");
     response.setCharacterEncoding("UTF-8");
     response.getWriter().println(json);
+
   }
 
   private void getPlaceIDFromString(String rawPlaceIDs){
 
-    placeIDs.addAll(Arrays.asList(rawPlaceIDs.split("-")));
+    placeIDs.addAll(Arrays.asList(rawPlaceIDs.split("\\.")));
   }
 
-  class Task implements Callable<PlaceDetails> {
-
-    GeoApiContext context;
+  class Task implements Runnable {
     String placeID;
 
-    Task(GeoApiContext givenContext, String givenPlaceID) {
-        context = givenContext;
+    Task( String givenPlaceID) {
         placeID = givenPlaceID;
     }
-    public PlaceDetails call() throws Exception {
+    @Override
+    public void run(){
       PlaceDetails apiResponse = new PlaceDetails();
       try{
         apiResponse = PlacesApi.placeDetails(context, placeID).await();
@@ -89,30 +91,24 @@ public class DetailedRequestServlet extends HttpServlet {
         e.printStackTrace();
       }
 
-      return apiResponse;
+      places.add(apiResponse);
     }
   }
   
   private void populatePlaceDetails () {
-    ExecutorService threadPool = Executors.newFixedThreadPool(20);
-    CompletionService<PlaceDetails> taskCompletionService = new ExecutorCompletionService<PlaceDetails>(threadPool);
+    ThreadFactory factory = ThreadManager.currentRequestThreadFactory();
+    ExecutorService threadPool = Executors.newCachedThreadPool(factory);
 
     for (int i = 0; i < placeIDs.size(); i++) {
-      System.out.println("new Tread submited");
-      taskCompletionService.submit(new Task (context, placeIDs.get(i)));
+      threadPool.submit(new Task(placeIDs.get(i)));
     }
 
-    for (int i = 0; i < placeIDs.size(); i++) {
-      try{
-        Future<PlaceDetails> result = taskCompletionService.take();
-        places.add(result.get());
-      }catch (InterruptedException e) {
-          System.out.println("Error Interrupted exception");
-          e.printStackTrace();
-      } catch (ExecutionException e) {
-          System.out.println("Error get() threw exception");
-          e.printStackTrace();
-      }
+    threadPool.shutdown();
+
+    try {
+      threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
   }
 }
