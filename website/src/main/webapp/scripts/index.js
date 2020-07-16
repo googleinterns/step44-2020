@@ -19,15 +19,8 @@ async function getQueue(query) {
   results.innerHTML = setToEmpty();
 
   restaurants.forEach((restaurant) => {
-    stars = "";
 
-    for (i = 0; i < parseInt(restaurant['rating']); i++) {
-      stars += '<i class="fa fa-star" aria-hidden="true"></i>';
-    }
-
-    if (parseFloat(restaurant['rating']) - parseInt(restaurant['rating']) > .5) {
-      stars += '<i class="fa fa-star-half-o" aria-hidden="true"></i>';
-    }
+    stars = buildStars(restaurant['rating']);
 
     color = getColor(volumeDataIndex);
 
@@ -65,6 +58,20 @@ async function getVolumeData() {
 
 function setToEmpty() {
   return "";
+}
+
+function buildStars(rating) {
+  stars = "";
+
+  for (i = 0; i < parseInt(rating); i++) {
+    stars += '<i class="fa fa-star" aria-hidden="true"></i>';
+  }
+
+  if (parseFloat(rating) - parseInt(rating) > .5) {
+    stars += '<i class="fa fa-star-half-o" aria-hidden="true"></i>';
+  }
+
+  return stars;
 }
 
 function getColor(volumeData) {
