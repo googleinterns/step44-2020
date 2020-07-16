@@ -37,12 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/MockData")
-public final class MockDataServlet extends HttpServlet {
+public class MockDataServlet extends HttpServlet {
 
-
+protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+protected long[] volumes;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
      /* int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
@@ -59,17 +60,19 @@ public final class MockDataServlet extends HttpServlet {
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
+    int cntr=0;
     for (Entity entity : results.asIterable()) {
       long id = (long)entity.getProperty("idNum");
       long orderVolume = (long) entity.getProperty("openOrderVolume");
+      volumes[cntr] = orderVolume;
       String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
+      cntr++;
     }
 
     // Send the JSON as the response
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(restaurants));
-    java.lang.System.out.println(gson.toJson(restaurants));
   }
 
   /**
