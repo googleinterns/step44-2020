@@ -40,10 +40,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+import com.google.appengine.api.datastore.PreparedQuery;
+
 @RunWith(MockitoJUnitRunner.class)
 public final class MockDataServletTest {
 
-  private final List MockDatastoreList;
+  private final ArrayList<Entity> MockDatastoreList = new ArrayList<Entity>();
   private final String MockString;
   
 
@@ -57,15 +64,15 @@ public final class MockDataServletTest {
     
     public MockDataServletTester(){
     
-     int cntr = 0;
+    Datastore datastore = mock(DatastoreService.class);
+    results = mock(PreparedQuery.class);
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("idNum", cntr);
+    restaurantEntity.setProperty("idNum", i);
     restaurantEntity.setProperty("timestamp", timestamp);
     restaurantEntity.setProperty("openOrderVolume", volumes[i]);
     MockDatastoreList.add(restaurantEntity);
-    cntr++;
     }
  
   }
@@ -73,12 +80,13 @@ public final class MockDataServletTest {
 
   @Test
   public void testMockDataServlet() throws Exception {
-    try{
+    
       HttpServletRequest request = mock(HttpServletRequest.class)       ;
       HttpServletResponse response = mock(HttpServletResponse.class);    
+    
 
-      when(datastore.prepare(query).thenReturn(MockDatastoreList));
-
+      when(datastore.prepare()).thenReturn(results);
+      when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
       when(response.getWriter()).thenReturn(writer);
@@ -87,12 +95,8 @@ public final class MockDataServletTest {
 
       
       writer.flush();
-
+    System.out.println(stringWriter.toString());
       assertTrue(stringWriter.toString().contains(MockString));
     }
-    finally{
-        System.out.println("something went wrong");
-    }
-  }
   
 }

@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MockDataServlet extends HttpServlet {
 
 protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+protected PreparedQuery results;
 protected long[] volumes;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,7 +57,7 @@ protected long[] volumes;
     }*/
     
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    results = datastore.prepare(query);
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
