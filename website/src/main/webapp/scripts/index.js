@@ -12,13 +12,11 @@ async function getQueue(query) {
       (restaurantVolumeData) => {
         return restaurantVolumeData;
       });
-
-  console.log(restaurants);
-  console.log(volumeData);
   volumeDataIndex = 1;
 
   const results = document.getElementById('results');
-  results.innerHTML = "";
+
+  results.innerHTML = setToEmpty();
 
   restaurants.forEach((restaurant) => {
     stars = "";
@@ -63,6 +61,10 @@ async function getVolumeData() {
       (restaurantVolumeData) => {
         return restaurantVolumeData;
       });
+}
+
+function setToEmpty() {
+  return "";
 }
 
 function getColor(volumeData) {
