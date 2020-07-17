@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -73,6 +74,25 @@ public class LocalTestServerContext implements AutoCloseable {
             .apiKey(apiKey)
             .build();
   }
+
+  public LocalTestServerContext(ArrayList<String> responseBody) throws IOException {
+    this.server = new MockWebServer();
+ 
+    for(int i = 0; i < responseBody.size(); i++){
+    MockResponse response = new MockResponse();
+    response.setHeader("Content-Type", "application/json");
+    response.setBody(responseBody.get(i));
+    server.enqueue(response);
+    }
+ 
+    server.start();
+ 
+    this.context =
+        new TestGeoApiContextBuilder("http://127.0.0.1:" + server.getPort())
+            .apiKey(apiKey)
+            .build();
+  }
+
 
   private List<NameValuePair> parseQueryParamsFromRequestLine(String requestLine)
       throws URISyntaxException {
