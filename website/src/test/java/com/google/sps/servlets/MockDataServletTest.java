@@ -101,7 +101,7 @@ public final class MockDataServletTest {
      // Query query = mock(Query.class);
       
      // when(datastore.prepare(any(Query.class))).thenReturn(results);
-      when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
+      //when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
       when(response.getWriter()).thenReturn(writer);
@@ -110,8 +110,8 @@ public final class MockDataServletTest {
       
       
       writer.flush();
-      System.out.println("Stringwriter: " +stringWriter.toString() );
-      System.out.println("MockString: " + MockString);
+      System.out.println(stringWriter.toString() );
+      System.out.println(MockString);
       assertTrue(stringWriter.toString().contains(MockString));
     }
   
