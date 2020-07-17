@@ -54,7 +54,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class MockDataServletTest {
-
+  protected final long[] volumes= {18, 10, 11, 19, 4, 10, 18, 13, 9, 9, 7, 15, 17, 6, 10, 20, 3, 7, 15, 0};
   private final ArrayList<Entity> MockDatastoreList = new ArrayList<Entity>();
   private final String MockString;
   private final LocalServiceTestHelper helper =
@@ -78,13 +78,14 @@ public final class MockDataServletTest {
       
     public MockDataServletTester(){
 
-
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
     restaurantEntity.setProperty("idNum", i);
     restaurantEntity.setProperty("timestamp", timestamp);
     restaurantEntity.setProperty("openOrderVolume", volumes[i]);
+    ds.put(restaurantEntity);
     MockDatastoreList.add(restaurantEntity);
     }
  
@@ -93,23 +94,24 @@ public final class MockDataServletTest {
 
   @Test
   public void testMockDataServlet() throws Exception {
-      DatastoreService datastore = mock(DatastoreService.class);
+      
       HttpServletRequest request = mock(HttpServletRequest.class);
       HttpServletResponse response = mock(HttpServletResponse.class);    
       PreparedQuery results = mock(PreparedQuery.class);
      // Query query = mock(Query.class);
       
-      when(datastore.prepare(any(Query.class))).thenReturn(results);
+     // when(datastore.prepare(any(Query.class))).thenReturn(results);
       when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
       when(response.getWriter()).thenReturn(writer);
 
       new MockDataServletTester().doGet(request, response);
-
+      
       
       writer.flush();
-      System.out.print(MockString);
+      System.out.println("Stringwriter: " +stringWriter.toString() );
+      System.out.println("MockString: " + MockString);
       assertTrue(stringWriter.toString().contains(MockString));
     }
   

@@ -41,7 +41,6 @@ public class MockDataServlet extends HttpServlet {
 
 protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 protected PreparedQuery results;
-protected long[] volumes = new long[20];
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
@@ -65,7 +64,6 @@ protected long[] volumes = new long[20];
     for (Entity entity : results.asIterable()) {
       long id = (long)entity.getProperty("idNum");
       long orderVolume = (long) entity.getProperty("openOrderVolume");
-      volumes[cntr] = orderVolume;
       String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
       cntr++;
