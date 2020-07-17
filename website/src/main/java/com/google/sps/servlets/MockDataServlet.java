@@ -41,7 +41,7 @@ public class MockDataServlet extends HttpServlet {
 
 protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 protected PreparedQuery results;
-protected long[] volumes;
+protected long[] volumes = new long[20];
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     

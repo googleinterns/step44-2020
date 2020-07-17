@@ -12,7 +12,6 @@
  * ANY KIND, either express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.Entity;
@@ -25,8 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.ArgumentMatchers.*;
 
-import com.google.maps.GeoApiContext;
+import com.google.appengine.api.datastore.Query;
 import com.google.sps.LocalTestServerContext;
 import com.google.sps.TestUtils;
 import java.io.PrintWriter;
@@ -35,15 +35,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-
+import org.mockito.MockitoAnnotations;
+import org.mockito.ArgumentMatchers;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.PreparedQuery;
 
@@ -52,19 +57,28 @@ public final class MockDataServletTest {
 
   private final ArrayList<Entity> MockDatastoreList = new ArrayList<Entity>();
   private final String MockString;
-  
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+ @Before
+  public void setUp() {
+    helper.setUp();
+  }
 
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
   public MockDataServletTest(){
 
     MockString = TestUtils.retrieveBody("/DatastoreMockData.json");
-
+    
   }
 
   class MockDataServletTester extends MockDataServlet {
-    
+      
     public MockDataServletTester(){
-    
-    datastore = mock(DatastoreService.class);
+
+
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
@@ -79,12 +93,13 @@ public final class MockDataServletTest {
 
   @Test
   public void testMockDataServlet() throws Exception {
-    
-      HttpServletRequest request = mock(HttpServletRequest.class)       ;
+      DatastoreService datastore = mock(DatastoreService.class);
+      HttpServletRequest request = mock(HttpServletRequest.class);
       HttpServletResponse response = mock(HttpServletResponse.class);    
       PreparedQuery results = mock(PreparedQuery.class);
-
-      when(datastore.prepare()).thenReturn(results);
+     // Query query = mock(Query.class);
+      
+      when(datastore.prepare(any(Query.class))).thenReturn(results);
       when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
@@ -94,7 +109,7 @@ public final class MockDataServletTest {
 
       
       writer.flush();
-    System.out.println(stringWriter.toString());
+      System.out.print(MockString);
       assertTrue(stringWriter.toString().contains(MockString));
     }
   
