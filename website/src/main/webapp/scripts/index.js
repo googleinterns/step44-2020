@@ -1,5 +1,14 @@
 //TODO: Encapsulate the function below into smaller functions.
 async function getQueue(query) {
+  const results = document.getElementById('results');
+
+  results.innerHTML = '<div class="text-center">'
+    + '<div class="spinner-border text-primary" role="status">'
+    + '<span class="sr-only" > Loading...</span></div></div>';
+
+  results.scrollIntoView();
+
+
   const restaurants = await fetch('/searchRequest?query=' + query)
     .then(response => response.json())
     .then((restaurantsData) => {
@@ -13,8 +22,6 @@ async function getQueue(query) {
         return restaurantVolumeData;
       });
   volumeDataIndex = 1;
-
-  const results = document.getElementById('results');
 
   results.innerHTML = setToEmpty();
 
@@ -31,6 +38,7 @@ async function getQueue(query) {
     volumeDataIndex++;
   });
 
+  results.scrollIntoView();
 }
 
 async function getRestaurants(query) {
