@@ -58,7 +58,7 @@ public final class RefreshDataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
          int id = (int) entity.getProperty("idNUm");
        int orderVolume = (int) entity.getProperty("openOrderVolume");
-       String message = id + " : " + orderVolume;      
+       String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
       }
 
