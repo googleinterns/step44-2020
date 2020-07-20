@@ -25,6 +25,8 @@ async function getQueue(query) {
 
   results.innerHTML = setToEmpty();
 
+  console.log(restaurants);
+
   restaurants.forEach((restaurant) => {
 
     stars = buildStars(restaurant['rating']);
@@ -63,7 +65,7 @@ function setToEmpty() {
 }
 
 function buildStars(rating) {
-  stars = "";
+  stars = "<div>";
 
   for (i = 0; i < parseInt(rating); i++) {
     stars += '<i class="fa fa-star" aria-hidden="true"></i>';
@@ -72,6 +74,8 @@ function buildStars(rating) {
   if (parseFloat(rating) - parseInt(rating) > .5) {
     stars += '<i class="fa fa-star-half-o" aria-hidden="true"></i>';
   }
+
+  stars += "</div>"
 
   return stars;
 }
@@ -102,8 +106,15 @@ function buildLine(volumeData, color) {
 function buildRestaurantCard(restaurant, stars, lineLength) {
   return '<div class="m-1 card"><div class="card-body"><h5 class="card-title">'
     + restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">'
-    + restaurant['formattedAddress'] + '</h6><p class="card-text">'
-    + stars + '</p><a href="#" class="card-link">' + lineLength
-    + '<i class="fa fa-angle-down"></i></a></div></div>';
+    + restaurant['formattedAddress'] + '</h6>'
+    + stars + lineLength + buildCollapsibleCard(restaurant['placeId']) + '</div></div>';
 
+}
+
+function buildCollapsibleCard(placeId) {
+  return '<a data-toggle="collapse" href="#' + placeId + '" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link">'
+    + '<i class="fa fa-angle-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
+    + '<div class="card card-body"> Anim pariatur cliche reprehenderit, enim eiusmod high'
+    + 'life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer '
+    + 'labore wes anderson cred nesciunt sapiente ea proident.</div></div>';
 }
