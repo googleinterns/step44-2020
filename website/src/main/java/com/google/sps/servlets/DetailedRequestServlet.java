@@ -16,11 +16,25 @@ package com.google.sps.servlets;
 
 import static com.google.sps.utility.Utility.convertToJsonUsingGson;
 
+import com.google.appengine.api.ThreadManager;
 import com.google.maps.model.PlaceDetails;
 import com.google.maps.PlacesApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GaeRequestHandler;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit ;
+import java.util.concurrent.ThreadFactory;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,24 +45,70 @@ import javax.servlet.http.HttpServletResponse;
 public class DetailedRequestServlet extends HttpServlet {
 
   protected GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-    .apiKey("<Insert key>")
+    .apiKey("<insertAPIKeyHere>")
     .build();
+
+  private ArrayList<PlaceDetails> places = new ArrayList<PlaceDetails>();
+  private ArrayList<String> placeIDs = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    try {
-      String PlaceID = request.getParameter("placeID");
-      PlaceDetails apiResponse = PlacesApi.placeDetails(context, PlaceID).await();
 
-      String json = convertToJsonUsingGson(apiResponse);
+    placeIDs.clear();
+    places.clear();
 
-      response.setContentType("application/json;");
-      response.setCharacterEncoding("UTF-8");
-      response.getWriter().println(json);
+    String rawPlaceIDs = request.getParameter("placeID"); 
 
-    } catch (Exception e) {
+    getPlaceIDFromString(rawPlaceIDs);
+
+    populatePlaceDetails();
+
+    String json = convertToJsonUsingGson(places);
+
+    response.setContentType("application/json;");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().println(json);
+
+  }
+
+  private void getPlaceIDFromString(String rawPlaceIDs){
+
+    placeIDs.addAll(Arrays.asList(rawPlaceIDs.split("\\.")));
+  }
+
+  class Task implements Runnable {
+    String placeID;
+
+    Task( String givenPlaceID) {
+        placeID = givenPlaceID;
+    }
+    @Override
+    public void run(){
+      PlaceDetails apiResponse = new PlaceDetails();
+      try{
+        apiResponse = PlacesApi.placeDetails(context, placeID).await();
+      }catch (Exception e) {
         e.printStackTrace();
+      }
+
+      places.add(apiResponse);
     }
   }
-  
+
+  private void populatePlaceDetails () {
+    ThreadFactory factory = ThreadManager.currentRequestThreadFactory();
+    ExecutorService threadPool = Executors.newCachedThreadPool(factory);
+
+    for (int i = 0; i < placeIDs.size(); i++) {
+      threadPool.submit(new Task(placeIDs.get(i)));
+    }
+
+    threadPool.shutdown();
+
+    try {
+      threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
 }
