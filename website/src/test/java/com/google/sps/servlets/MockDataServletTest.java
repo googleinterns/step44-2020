@@ -98,10 +98,7 @@ public final class MockDataServletTest {
       HttpServletRequest request = mock(HttpServletRequest.class);
       HttpServletResponse response = mock(HttpServletResponse.class);    
       PreparedQuery results = mock(PreparedQuery.class);
-     // Query query = mock(Query.class);
-      
-     // when(datastore.prepare(any(Query.class))).thenReturn(results);
-      //when(results.asIterable()).thenReturn(MockDatastoreList);//asiterable return list
+
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
       when(response.getWriter()).thenReturn(writer);
