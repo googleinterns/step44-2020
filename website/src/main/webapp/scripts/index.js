@@ -22,7 +22,7 @@ async function getQueue(query) {
         return restaurantVolumeData;
       });
 
-  placeData = fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
+  placeData = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
     .then(response => response.json())
     .then((placeServletData) => {
       return placeServletData;
