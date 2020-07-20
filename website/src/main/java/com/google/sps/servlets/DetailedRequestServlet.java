@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DetailedRequestServlet extends HttpServlet {
 
   protected GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-    .apiKey("<Insert key>")
+    .apiKey("<insertAPIKeyHere>")
     .build();
 
   @Override
