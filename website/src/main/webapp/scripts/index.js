@@ -21,11 +21,16 @@ async function getQueue(query) {
       (restaurantVolumeData) => {
         return restaurantVolumeData;
       });
+
+  placeData = fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
+    .then(response => response.json())
+    .then((placeServletData) => {
+      return placeServletData;
+    });
+
   volumeDataIndex = 1;
 
   results.innerHTML = setToEmpty();
-
-  console.log(restaurants);
 
   restaurants.forEach((restaurant) => {
 
@@ -58,6 +63,16 @@ async function getVolumeData() {
       (restaurantVolumeData) => {
         return restaurantVolumeData;
       });
+}
+
+function buildPlaceQuery(restaurants) {
+  query = "";
+
+  restaurants.forEach((restaurant) => {
+    query += restaurant['placeId'] + '.';
+  });
+
+  return query.substring(0, query.length - 1);
 }
 
 function setToEmpty() {
