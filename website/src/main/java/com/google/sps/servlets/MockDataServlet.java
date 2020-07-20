@@ -60,13 +60,12 @@ protected PreparedQuery results;
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
-    int cntr=0;
     for (Entity entity : results.asIterable()) {
       long id = (long)entity.getProperty("idNum");
       long orderVolume = (long) entity.getProperty("openOrderVolume");
       String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
-      cntr++;
+
     }
 
     // Send the JSON as the response

@@ -20,10 +20,9 @@ import java. util. Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
+
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.ArgumentMatchers.*;
 
 import com.google.appengine.api.datastore.Query;
