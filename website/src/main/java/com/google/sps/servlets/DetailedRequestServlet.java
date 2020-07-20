@@ -94,7 +94,7 @@ public class DetailedRequestServlet extends HttpServlet {
       places.add(apiResponse);
     }
   }
-  
+
   private void populatePlaceDetails () {
     ThreadFactory factory = ThreadManager.currentRequestThreadFactory();
     ExecutorService threadPool = Executors.newCachedThreadPool(factory);
