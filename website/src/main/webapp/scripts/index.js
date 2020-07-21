@@ -22,10 +22,16 @@ async function getQueue(query) {
         return restaurantVolumeData;
       });
 
-  placeData = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
+  placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
     .then(response => response.json())
     .then((placeServletData) => {
-      return placeServletData;
+      console.log(placeServletData);
+      let map = new Map();
+      placeServletData.forEach((placeIdElement) => {
+        map[placeIdElement["placeId"]] = placeIdElement["placeId"];
+      });
+
+      return map;
     });
 
   volumeDataIndex = 1;
@@ -40,7 +46,7 @@ async function getQueue(query) {
 
     lineLength = buildLine(volumeDataIndex, color);
 
-    results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength);
+    results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
 
     volumeDataIndex++;
   });
@@ -118,15 +124,15 @@ function buildLine(volumeData, color) {
   return line;
 }
 
-function buildRestaurantCard(restaurant, stars, lineLength) {
+function buildRestaurantCard(restaurant, stars, lineLength, placeIdMap) {
   return '<div class="m-1 card"><div class="card-body"><h5 class="card-title">'
     + restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">'
     + restaurant['formattedAddress'] + '</h6>'
-    + stars + lineLength + buildCollapsibleCard(restaurant['placeId']) + '</div></div>';
+    + stars + lineLength + buildCollapsibleCard(restaurant['placeId'], placeIdMap) + '</div></div>';
 
 }
 
-function buildCollapsibleCard(placeId) {
+function buildCollapsibleCard(placeId, placeIdMap) {
   return '<a data-toggle="collapse" href="#' + placeId + '" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link">'
     + '<i class="fa fa-angle-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
     + '<div class="card card-body"> Anim pariatur cliche reprehenderit, enim eiusmod high'
