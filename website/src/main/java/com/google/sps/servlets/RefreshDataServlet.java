@@ -38,15 +38,15 @@ import java.util.Scanner;
 import java.util.Random;
 
 @WebServlet("/RefreshData")
-public final class RefreshDataServlet extends HttpServlet {
+public class RefreshDataServlet extends HttpServlet {
   protected final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  protected final  Random r = new Random(20);
  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
-    System.out.print("mock" + results);
      Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
@@ -54,35 +54,40 @@ public final class RefreshDataServlet extends HttpServlet {
         entity.setProperty("timestamp", timestamp);
         long newOrderVolume = (long) entity.getProperty("openOrderVolume");
         newOrderVolume+=(long)getRandomChange();
+        if(newOrderVolume>= 30){
+            newOrderVolume=26;
+        }
+        else if( newOrderVolume<0){
+            newOrderVolume =2;
+        }
         entity.setProperty("openOrderVolume", newOrderVolume);
         String message = "orderVolume" + " : " + newOrderVolume;      
         restaurants.add(message);
         datastore.put(entity);
     }
-    System.out.print("mock2" + restaurants);
+
 
     // Send the JSON as the response
     response.setContentType("application/json;");
-    response.setCharacterEncoding("UTF-8");    
+
     response.getWriter().println(gson.toJson(restaurants));
   }
 
   /**
    * gets a random number between 0 and 20 for openOrderVolume
    */
-  private int getRandomChange() {
+  public int getRandomChange() {
     
-    Random r = new Random(5);
+
       
      int rand = r.nextInt(3);
-  
     if(rand==0){
         return 0;
     }
     if(rand ==1){
         return -1;
     }
-    return 1;
+    return rand;
   }
 
   

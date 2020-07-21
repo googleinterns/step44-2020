@@ -55,6 +55,7 @@ protected PreparedQuery results;
     cntr++;
     }
     */
+    
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     results = datastore.prepare(query);
 

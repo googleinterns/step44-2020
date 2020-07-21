@@ -11,7 +11,7 @@
  * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
  * ANY KIND, either express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
- 
+ */
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.Entity;
@@ -51,11 +51,15 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.PreparedQuery;
 
+import java.util.Scanner;
+import java.util.Random;
+
 @RunWith(MockitoJUnitRunner.class)
 public final class RefreshDataServletTest {
   protected final long[] volumes= {18, 10, 11, 19, 4, 10, 18, 13, 9, 9, 7, 15, 17, 6, 10, 20, 3, 7, 15, 0};
+
   private final ArrayList<Entity> MockDatastoreList = new ArrayList<Entity>();
-  private final String RefreshString;
+  private final String refreshString;
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
  @Before
@@ -69,7 +73,7 @@ public final class RefreshDataServletTest {
   }
   public RefreshDataServletTest(){
 
-    RefreshString = TestUtils.retrieveBody("/RefreshData.json");
+    refreshString = TestUtils.retrieveBody("/Refresh.json");
     
   }
 
@@ -87,19 +91,22 @@ public final class RefreshDataServletTest {
     ds.put(restaurantEntity);
     MockDatastoreList.add(restaurantEntity);
     }
- 
+    
   }
   }
 
   @Test
   public void testRefreshDataServlet() throws Exception {
-      
+      Random r = mock(Random.class);
       HttpServletRequest request = mock(HttpServletRequest.class);
       HttpServletResponse response = mock(HttpServletResponse.class);    
       PreparedQuery results = mock(PreparedQuery.class);
-
+    int cntr =0;
+     
+      cntr++;
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
+      
       when(response.getWriter()).thenReturn(writer);
 
       new RefreshDataServletTester().doGet(request, response);
@@ -107,9 +114,8 @@ public final class RefreshDataServletTest {
       
       writer.flush();
       System.out.println(stringWriter.toString() );
-      System.out.println(RefreshString);
-      assertTrue(stringWriter.toString().contains(RefreshString));
+      System.out.println(refreshString);
+      assertTrue(stringWriter.toString().contains(refreshString));
     }
   
 }
-*/
