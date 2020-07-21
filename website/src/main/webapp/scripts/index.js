@@ -133,7 +133,6 @@ function buildCollapsibleCard(placeId, placeIdMap) {
 }
 
 function buildInformationSection(placeData) {
-  console.log(placeData);
   infoSection = "";
 
   if (placeData['openingHours']) {
