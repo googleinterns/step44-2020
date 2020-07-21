@@ -5,13 +5,22 @@ async function getQueue(query) {
     .then((restaurantsData) => {
       return restaurantsData['results'];
     });
-
+   
   const volumeData = await fetch('/MockData')
     .then(response => response.json())
     .then(
       (restaurantVolumeData) => {
         return restaurantVolumeData;
       });
+    console.log(volumeData);
+    
+    const refresh = await fetch('/RefreshData')//new
+    .then(response => response.json())
+    .then((refreshData) => {
+        console.log(refreshData);
+      return refreshData;
+    });
+     console.log(refresh);
   volumeDataIndex = 1;
 
   const results = document.getElementById('results');

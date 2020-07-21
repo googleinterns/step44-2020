@@ -34,36 +34,36 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Scanner;
+import java.util.Random;
 
 @WebServlet("/RefreshData")
 public final class RefreshDataServlet extends HttpServlet {
-
+  protected final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+ 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
+    System.out.print("mock" + results);
+     Gson gson = new Gson();
+    ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
         long timestamp = System.currentTimeMillis();
         entity.setProperty("timestamp", timestamp);
-        int newOrderVolume = (int) entity.getProperty("openOrderVolume");
-        newOrderVolume+=getRandomChange();
+        long newOrderVolume = (long) entity.getProperty("openOrderVolume");
+        newOrderVolume+=(long)getRandomChange();
         entity.setProperty("openOrderVolume", newOrderVolume);
+        String message = "orderVolume" + " : " + newOrderVolume;      
+        restaurants.add(message);
         datastore.put(entity);
     }
-    
-
-    Gson gson = new Gson();
-    ArrayList<String> restaurants = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-         int id = (int) entity.getProperty("idNUm");
-       int orderVolume = (int) entity.getProperty("openOrderVolume");
-       String message = "orderVolume" + " : " + orderVolume;      
-      restaurants.add(message); 
-      }
+    System.out.print("mock2" + restaurants);
 
     // Send the JSON as the response
     response.setContentType("application/json;");
+    response.setCharacterEncoding("UTF-8");    
     response.getWriter().println(gson.toJson(restaurants));
   }
 
@@ -72,8 +72,8 @@ public final class RefreshDataServlet extends HttpServlet {
    */
   private int getRandomChange() {
     
-    Random r = new Random();
-     r.setSeed(5); 
+    Random r = new Random(5);
+      
      int rand = r.nextInt(3);
   
     if(rand==0){
