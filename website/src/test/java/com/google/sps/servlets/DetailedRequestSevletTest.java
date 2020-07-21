@@ -124,8 +124,6 @@ public final class DetailedRequestSevletTest {
 
       writer.flush();
 
-      System.out.println(stringWriter.toString());
-
       assertTrue(stringWriter.toString().contains(servletMultiplePlaceDetailsResponseBody));
     }
   }
