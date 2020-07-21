@@ -15,7 +15,6 @@
 package com.google.sps.servlets;
 
 import static com.google.sps.utility.Utility.convertToJsonUsingGson;
-
 import com.google.maps.model.PlacesSearchResponse;
 import com.google.maps.PlacesApi;
 import com.google.maps.GeoApiContext;
@@ -36,6 +35,7 @@ public class SearchRequestServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
     try {
       String query = request.getParameter("query");
       PlacesSearchResponse apiResponse = PlacesApi.textSearchQuery(context,query).await();
