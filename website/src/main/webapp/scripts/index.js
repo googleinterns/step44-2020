@@ -2,7 +2,7 @@
 async function getQueue(query) {
   const results = document.getElementById('results');
 
-  results.innerHTML = '<div class="text-center">'
+  results.innerHTML = '<div class="animated fadeIn text-center">'
     + '<div class="spinner-border text-primary" role="status">'
     + '<span class="sr-only" > Loading...</span></div></div>';
 
@@ -25,13 +25,7 @@ async function getQueue(query) {
   placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
     .then(response => response.json())
     .then((placeServletData) => {
-      console.log(placeServletData);
-      let map = new Map();
-      placeServletData.forEach((placeIdElement) => {
-        map[placeIdElement["placeId"]] = placeIdElement["placeId"];
-      });
-
-      return map;
+      return placeServletData;
     });
 
   volumeDataIndex = 1;
@@ -125,7 +119,7 @@ function buildLine(volumeData, color) {
 }
 
 function buildRestaurantCard(restaurant, stars, lineLength, placeIdMap) {
-  return '<div class="m-1 card"><div class="card-body"><h5 class="card-title">'
+  return '<div class="animated fadeIn m-1 card"><div class="card-body"><h5 class="card-title">'
     + restaurant['name'] + '</h5><h6 class="card-subtitle mb-2 text-muted">'
     + restaurant['formattedAddress'] + '</h6>'
     + stars + lineLength + buildCollapsibleCard(restaurant['placeId'], placeIdMap) + '</div></div>';
@@ -135,7 +129,51 @@ function buildRestaurantCard(restaurant, stars, lineLength, placeIdMap) {
 function buildCollapsibleCard(placeId, placeIdMap) {
   return '<a data-toggle="collapse" href="#' + placeId + '" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link">'
     + '<i class="fa fa-angle-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
-    + '<div class="card card-body"> Anim pariatur cliche reprehenderit, enim eiusmod high'
-    + 'life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer '
-    + 'labore wes anderson cred nesciunt sapiente ea proident.</div></div>';
+    + '<div class="card card-body">' + buildInformationSection(placeIdMap[placeId]) + '</div></div>';
+}
+
+function buildInformationSection(placeData) {
+  console.log(placeData);
+  infoSection = "";
+
+  if (placeData['openingHours']) {
+    infoSection += buildOpeningHoursSection(placeData['openingHours']);
+  }
+
+  if (placeData['formattedPhoneNumber']) {
+    infoSection += buildPhoneSection(placeData['formattedPhoneNumber']);
+  }
+
+  if (placeData['website']) {
+    infoSection += buildWebsiteSection(placeData['website']);
+  }
+
+  return infoSection;
+}
+
+function buildOpeningHoursSection(hourData) {
+  ohSection = '<div>';
+  if (hourData.openNow) {
+    ohSection += '<h6 class="card-text text-success"> Open Now </h6>';
+  } else {
+    ohSection += '<h6 class="card-text text-danger"> Closed </h6>';
+  }
+
+  for (i = 0; i < 7; i++) {
+    ohSection += '<p class="card-text">' + hourData['weekdayText'][i] + '</p>';
+  }
+
+  ohSection += '</div>';
+
+  return ohSection;
+}
+
+function buildPhoneSection(phoneData) {
+  return '<div class="mt-1 mb-1 card-link"> <a href="tel:' + parseInt(phoneData)
+    + '">' + phoneData + '</a></div>';
+}
+
+function buildWebsiteSection(websiteData) {
+  return '<div> <a href="' + websiteData
+    + '" class="btn btn-primary"> Go To Website </a></div>';
 }
