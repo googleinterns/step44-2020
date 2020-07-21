@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -47,14 +48,11 @@ public class DetailedRequestServlet extends HttpServlet {
   protected GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
     .apiKey("<insertAPIKeyHere>")
     .build();
-
-  private ArrayList<PlaceDetails> places = new ArrayList<PlaceDetails>();
-  private ArrayList<String> placeIDs = new ArrayList<String>();
+  private HashMap<String,PlaceDetails> places =new HashMap<String,PlaceDetails>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    placeIDs.clear();
     places.clear();
 
     String rawPlaceIDs = request.getParameter("placeID"); 
@@ -73,7 +71,12 @@ public class DetailedRequestServlet extends HttpServlet {
 
   private void getPlaceIDFromString(String rawPlaceIDs){
 
-    placeIDs.addAll(Arrays.asList(rawPlaceIDs.split("\\.")));
+    List<String> tempIDList = Arrays.asList(rawPlaceIDs.split("\\."));
+    PlaceDetails TempDetails = new PlaceDetails();
+
+    for(String ID : tempIDList){
+      places.put(ID,TempDetails);
+    }
   }
 
   class Task implements Runnable {
@@ -91,7 +94,7 @@ public class DetailedRequestServlet extends HttpServlet {
         e.printStackTrace();
       }
 
-      places.add(apiResponse);
+      places.replace(placeID,apiResponse);
     }
   }
 
@@ -99,8 +102,8 @@ public class DetailedRequestServlet extends HttpServlet {
     ThreadFactory factory = ThreadManager.currentRequestThreadFactory();
     ExecutorService threadPool = Executors.newCachedThreadPool(factory);
 
-    for (int i = 0; i < placeIDs.size(); i++) {
-      threadPool.submit(new Task(placeIDs.get(i)));
+    for (String ID : places.keySet()) {
+      threadPool.submit(new Task(ID));
     }
 
     threadPool.shutdown();
