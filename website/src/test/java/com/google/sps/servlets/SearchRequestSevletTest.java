@@ -69,7 +69,7 @@ public final class SearchRequestSevletTest {
       StringWriter stringWriter = new StringWriter();
       PrintWriter writer = new PrintWriter(stringWriter);
       when(response.getWriter()).thenReturn(writer);
-
+        
       new SearchRequestSevletTester(sc.context).doGet(request, response);
 
       verify(request, atLeast(1)).getParameter("query");

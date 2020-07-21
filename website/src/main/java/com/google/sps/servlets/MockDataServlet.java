@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import java.util.Random;
+import java. util. Collections;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -36,12 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/MockData")
-public final class MockDataServlet extends HttpServlet {
+public class MockDataServlet extends HttpServlet {
 
-
+protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+protected PreparedQuery results;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
      /* int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
@@ -54,15 +56,16 @@ public final class MockDataServlet extends HttpServlet {
     }*/
     
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    results = datastore.prepare(query);
 
     Gson gson = new Gson();
     ArrayList<String> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       long id = (long)entity.getProperty("idNum");
       long orderVolume = (long) entity.getProperty("openOrderVolume");
-      String message = id + " : " + orderVolume;      
+      String message = "orderVolume" + " : " + orderVolume;      
       restaurants.add(message); 
+
     }
 
     // Send the JSON as the response
