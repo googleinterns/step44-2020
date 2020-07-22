@@ -5,54 +5,39 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
-
-	<link rel="stylesheet"
-		href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
-		integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-	<link href="stylesheets/index.css" rel="stylesheet">
-	<script src="scripts/index.js">
-	</script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
 	<title>Queue</title>
 </head>
 
 <body>
-	<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-		<header class="masthead mb-auto">
-		</header>
+	<div style="height: 100vh">
+		<div class="flex-center flex-column">
+			<h1 class="animated fadeIn mb-2"> Queue </h1>
 
-		<main role="main" class="inner cover">
-			<h1 class="cover-heading text-center">Queue</h1>
-			<form class="form-inline d-flex justify-content-center">
-				<div class="form-group">
-					<input class="form-control" type="text" placeholder="Search" aria-label="Search" id="search">
-					<i class="m-1 fa fa-search" aria-hidden="true" onclick="getQueue(document.getElementById('search').value)"></i>
-				</div>
-			</form>
-			<div id="results">
-			</div>
-			<div>
-			</div>
-		</main>
-		<footer class="mastfoot mt-auto">
-			<div class="inner">
-			</div>
-		</footer>
+			<h5 class="animated fadeIn mb-1">
+				<form class="form-inline d-flex justify-content-center md-form form-sm">
+					<input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" id="search"
+            aria-label="Search">
+					<i class="fas fa-search" aria-hidden="true" onclick="getQueue(document.getElementById('search').value)"></i>
+				</form>
+			</h5>
+			<p class="animated fadeIn text-muted"> Created by Madeline Cuozzo, Paul Lockett, and Yojairo Morales </p>
+		</div>
 	</div>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+	<div class="animated fadeIn" id="results">
+	</div>
+
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js">
 	</script>
-	<script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
-		integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous">
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js">
 	</script>
-	<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
-		integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous">
-	</script>
-	<script>
-		$(document).ready(function() { $('body').bootstrapMaterialDesign(); });
-	</script>
+	<script src="scripts/index.js"></script>
 </body>
 
 </html>
