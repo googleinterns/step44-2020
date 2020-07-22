@@ -15,11 +15,15 @@ async function getQueue(query) {
       return restaurantsData['results'];
     });
 
-  const volumeData = await fetch('/MockData')
+  volumeData = await fetch('/MockData')
     .then(response => response.json())
     .then(
       (restaurantVolumeData) => {
-        return restaurantVolumeData;
+        volData = [];
+        restaurantVolumeData.forEach((restaurantVolume) => {
+          volData.push(parseInt(restaurantVolume.match(/\d+/g)));
+        });
+        return volData;
       });
 
   placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
@@ -28,7 +32,7 @@ async function getQueue(query) {
       return placeServletData;
     });
 
-  volumeDataIndex = 1;
+  index = 0;
 
   results.innerHTML = setToEmpty();
 
@@ -36,13 +40,13 @@ async function getQueue(query) {
 
     stars = buildStars(restaurant['rating']);
 
-    color = getColor(volumeDataIndex);
+    color = getColor(volumeData[index]);
 
-    lineLength = buildLine(volumeDataIndex, color);
+    lineLength = buildLine(volumeData[index], color);
 
     results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
 
-    volumeDataIndex++;
+    index++;
   });
 
   results.scrollIntoView();
@@ -107,6 +111,9 @@ function getColor(volumeData) {
 }
 
 function buildLine(volumeData, color) {
+  if (volumeData == 0) {
+    return '<div><p>No Line!</p></div>'
+  }
   line = "<div>";
 
   for (i = 0; i < volumeData; i++) {
@@ -168,7 +175,7 @@ function buildOpeningHoursSection(hourData) {
 }
 
 function buildPhoneSection(phoneData) {
-  return '<div class="mt-1 mb-1 card-link"> <a href="tel:' + parseInt(phoneData)
+  return '<div class="mt-1 mb-1 card-link"> <a href="tel:' + parseInt(phoneData, 10)
     + '">' + phoneData + '</a></div>';
 }
 
