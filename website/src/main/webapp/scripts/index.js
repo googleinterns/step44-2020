@@ -1,6 +1,7 @@
 //TODO: Encapsulate the function below into smaller functions.
 async function getQueue(query) {
   const results = document.getElementById('results');
+  const filters = document.getElementById('filters');
 
   results.innerHTML = '<div class="animated fadeIn text-center">'
     + '<div class="spinner-border text-primary" role="status">'
@@ -36,6 +37,8 @@ async function getQueue(query) {
 
   results.innerHTML = setToEmpty();
 
+  results.innerHTML = setResultsLabel(query);
+
   restaurants.forEach((restaurant) => {
 
     stars = buildStars(restaurant['rating']);
@@ -49,6 +52,7 @@ async function getQueue(query) {
     index++;
   });
 
+  filters.innerHTML = buildFiltersMenu();
   results.scrollIntoView();
 }
 
@@ -81,6 +85,10 @@ function buildPlaceQuery(restaurants) {
 
 function setToEmpty() {
   return "";
+}
+
+function setResultsLabel(query) {
+  return '<h5><b> Results for "' + query + '"</b></h5>'
 }
 
 function buildStars(rating) {
@@ -135,7 +143,7 @@ function buildRestaurantCard(restaurant, stars, lineLength, placeIdMap) {
 
 function buildCollapsibleCard(placeId, placeIdMap) {
   return '<a data-toggle="collapse" href="#' + placeId + '" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link">'
-    + '<i class="fa fa-angle-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
+    + '<i class="fas fa-caret-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
     + '<div class="card card-body">' + buildInformationSection(placeIdMap[placeId]) + '</div></div>';
 }
 
@@ -182,4 +190,56 @@ function buildPhoneSection(phoneData) {
 function buildWebsiteSection(websiteData) {
   return '<div> <a href="' + websiteData
     + '" class="btn btn-primary"> Go To Website </a></div>';
+}
+
+function buildFiltersMenu() {
+  return `<h5><b> Filters </b></h5>
+					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-primary">
+              <input type="checkbox" autocomplete="off">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i> 
+            </label>
+						<label class="btn btn-primary">
+              <input type="checkbox" autocomplete="off">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </label>
+						<label class="btn btn-primary">
+              <input type="checkbox" autocomplete="off"> 
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </label>
+					</div>
+					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-success">
+              <input type="checkbox" autocomplete="off">
+              <i class="fa fa-user" aria-hidden="true"></i>
+            </label>
+						<label class="btn btn-warning">
+              <input type="checkbox" autocomplete="off">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </label>
+						<label class="btn btn-danger">
+              <input type="checkbox" autocomplete="off"> 
+              <i class="fa fa-user" aria-hidden="true"></i>
+              <i class="fa fa-user" aria-hidden="true"></i>
+              <i class="fa fa-user" aria-hidden="true"></i>
+            </label>
+					</div>
+					<div class="m-1 custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+						<label class="custom-control-label" for="defaultUnchecked"> Open Now </label>
+					</div> `;
+}
+
+function gotem() {
+  console.log("hehe");
 }
