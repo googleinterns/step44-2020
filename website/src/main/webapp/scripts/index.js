@@ -56,23 +56,6 @@ async function getQueue(query) {
   results.scrollIntoView();
 }
 
-async function getRestaurants(query) {
-  fetch('/searchRequest?query=' + query)
-    .then(response => response.json())
-    .then((restaurantsData) => {
-      return restaurantsData['results'];
-    });
-}
-
-async function getVolumeData() {
-  fetch('/MockData')
-    .then(response => response.json())
-    .then(
-      (restaurantVolumeData) => {
-        return restaurantVolumeData;
-      });
-}
-
 function buildPlaceQuery(restaurants) {
   query = "";
 
