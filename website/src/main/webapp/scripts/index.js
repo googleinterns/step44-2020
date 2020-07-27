@@ -1,5 +1,5 @@
-//TODO: Encapsulate the function below into smaller functions.
-async function getQueue(query) {
+async function getQueue(initialSearch) {
+  const query = document.getElementById('search').value;
   const results = document.getElementById('results');
   const filters = document.getElementById('filters');
 
@@ -40,19 +40,22 @@ async function getQueue(query) {
   results.innerHTML = setResultsLabel(query);
 
   restaurants.forEach((restaurant) => {
+    if (initialSearch || validFilteredResult(restaurant, volumeData[index], placeIdMap)) {
+      stars = buildStars(restaurant['rating']);
 
-    stars = buildStars(restaurant['rating']);
+      color = getColor(volumeData[index]);
 
-    color = getColor(volumeData[index]);
+      lineLength = buildLine(volumeData[index], color);
 
-    lineLength = buildLine(volumeData[index], color);
+      results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
 
-    results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
-
-    index++;
+      index++;
+    }
   });
 
-  filters.innerHTML = buildFiltersMenu();
+  if (initialSearch) {
+    filters.innerHTML = buildFiltersMenu();
+  }
   results.scrollIntoView();
 }
 
@@ -71,7 +74,51 @@ function setToEmpty() {
 }
 
 function setResultsLabel(query) {
-  return '<h5><b> Results for "' + query + '"</b></h5>'
+  return '<h5><b> Results for "' + query + '"</b></h5>';
+}
+
+function validFilteredResult(restaurant, lineLength, placeIdMap) {
+  fourStars = document.getElementById('fourStars').checked;
+  fiveStars = document.getElementById('fiveStars').checked;
+  shortLine = document.getElementById('shortLine').checked;
+  mediumLine = document.getElementById('mediumLine').checked;
+  placeData = placeIdMap[restaurant['placeId']]
+
+  if (fourStars && fiveStars) {
+    if (parseInt(restaurant['rating']) < 4.0) {
+      return false;
+    }
+  } else if (fourStars) {
+    if (parseInt(restaurant['rating']) < 4.0) {
+      return false;
+    }
+  } else if (fiveStars) {
+    if (parseInt(restaurant['rating']) < 4.5) {
+      return false;
+    }
+  }
+
+  if (shortLine && mediumLine) {
+    if (parseInt(lineLength) > 12) {
+      return false;
+    }
+  } else if (shortLine) {
+    if (parseInt(lineLength) > 5) {
+      return false;
+    }
+  } else if (mediumLine) {
+    if (parseInt(lineLength) > 12) {
+      return false;
+    }
+  }
+
+  if (placeData['openingHours']) {
+    if (!placeData['openingHours'].openNow) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function buildStars(rating) {
@@ -179,20 +226,14 @@ function buildFiltersMenu() {
   return `<h5><b> Filters </b></h5>
 					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
 						<label class="btn btn-primary">
-              <input type="checkbox" autocomplete="off">
-              <i class="fa fa-star" aria-hidden="true"></i>
-              <i class="fa fa-star" aria-hidden="true"></i>
-              <i class="fa fa-star" aria-hidden="true"></i> 
-            </label>
-						<label class="btn btn-primary">
-              <input type="checkbox" autocomplete="off">
+              <input type="checkbox" autocomplete="off" id="fourStars">
               <i class="fa fa-star" aria-hidden="true"></i>
               <i class="fa fa-star" aria-hidden="true"></i>
               <i class="fa fa-star" aria-hidden="true"></i>
               <i class="fa fa-star" aria-hidden="true"></i>
             </label>
 						<label class="btn btn-primary">
-              <input type="checkbox" autocomplete="off"> 
+              <input type="checkbox" autocomplete="off" id="fiveStars"> 
               <i class="fa fa-star" aria-hidden="true"></i>
               <i class="fa fa-star" aria-hidden="true"></i>
               <i class="fa fa-star" aria-hidden="true"></i>
@@ -202,27 +243,17 @@ function buildFiltersMenu() {
 					</div>
 					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
 						<label class="btn btn-success">
-              <input type="checkbox" autocomplete="off">
+              <input type="checkbox" autocomplete="off" id="shortLine">
               <i class="fa fa-user" aria-hidden="true"></i>
             </label>
 						<label class="btn btn-warning">
-              <input type="checkbox" autocomplete="off">
+              <input type="checkbox" autocomplete="off" id="mediumLine">
                 <i class="fa fa-user" aria-hidden="true"></i>
                 <i class="fa fa-user" aria-hidden="true"></i>
-            </label>
-						<label class="btn btn-danger">
-              <input type="checkbox" autocomplete="off"> 
-              <i class="fa fa-user" aria-hidden="true"></i>
-              <i class="fa fa-user" aria-hidden="true"></i>
-              <i class="fa fa-user" aria-hidden="true"></i>
             </label>
 					</div>
 					<div class="m-1 custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" id="defaultUnchecked">
-						<label class="custom-control-label" for="defaultUnchecked"> Open Now </label>
+						<input type="checkbox" class="custom-control-input" id="openNow">
+						<label class="custom-control-label" for="openNow"> Open Now </label>
 					</div> `;
-}
-
-function gotem() {
-  console.log("hehe");
 }

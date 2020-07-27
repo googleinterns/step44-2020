@@ -20,7 +20,7 @@
 				<div class="form-inline d-flex justify-content-center md-form form-sm">
 					<input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" id="search"
             aria-label="Search">
-					<i class="fas fa-search" aria-hidden="true" onclick="getQueue(document.getElementById('search').value)"></i>
+					<i class="fas fa-search" aria-hidden="true" onclick="getQueue(1)"></i>
 				</div>
 			</h5>
 			<p class="animated fadeIn text-muted"> Created by Madeline Cuozzo, Paul Lockett, and Yojairo Morales </p>
@@ -29,7 +29,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-5">
-				<div class="animated fadeIn" id="filters" onchange="gotem()">
+				<div class="animated fadeIn" id="filters" onchange="getQueue(0)">
 				</div>
 			</div>
 			<div class="col-md-7">
