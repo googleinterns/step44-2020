@@ -1,6 +1,7 @@
-//TODO: Encapsulate the function below into smaller functions.
-async function getQueue(query) {
+async function getQueue(initialSearch) {
+  const query = document.getElementById('search').value;
   const results = document.getElementById('results');
+  const filters = document.getElementById('filters');
 
   results.innerHTML = '<div class="animated fadeIn text-center">'
     + '<div class="spinner-border text-primary" role="status">'
@@ -15,11 +16,15 @@ async function getQueue(query) {
       return restaurantsData['results'];
     });
 
-  const volumeData = await fetch('/MockData')
+  volumeData = await fetch('/MockData')
     .then(response => response.json())
     .then(
       (restaurantVolumeData) => {
-        return restaurantVolumeData;
+        volData = [];
+        restaurantVolumeData.forEach((restaurantVolume) => {
+          volData.push(parseInt(restaurantVolume.match(/\d+/g)));
+        });
+        return volData;
       });
 
   placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
@@ -28,41 +33,30 @@ async function getQueue(query) {
       return placeServletData;
     });
 
-  volumeDataIndex = 1;
+  index = 0;
 
   results.innerHTML = setToEmpty();
 
+  results.innerHTML = setResultsLabel(query);
+
   restaurants.forEach((restaurant) => {
+    if (initialSearch || validFilteredResult(restaurant, volumeData[index], placeIdMap)) {
+      stars = buildStars(restaurant['rating']);
 
-    stars = buildStars(restaurant['rating']);
+      color = getColor(volumeData[index]);
 
-    color = getColor(volumeDataIndex);
+      lineLength = buildLine(volumeData[index], color);
 
-    lineLength = buildLine(volumeDataIndex, color);
+      results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
 
-    results.innerHTML += buildRestaurantCard(restaurant, stars, lineLength, placeIdMap);
-
-    volumeDataIndex++;
+      index++;
+    }
   });
 
+  if (initialSearch) {
+    filters.innerHTML = buildFiltersMenu();
+  }
   results.scrollIntoView();
-}
-
-async function getRestaurants(query) {
-  fetch('/searchRequest?query=' + query)
-    .then(response => response.json())
-    .then((restaurantsData) => {
-      return restaurantsData['results'];
-    });
-}
-
-async function getVolumeData() {
-  fetch('/MockData')
-    .then(response => response.json())
-    .then(
-      (restaurantVolumeData) => {
-        return restaurantVolumeData;
-      });
 }
 
 function buildPlaceQuery(restaurants) {
@@ -77,6 +71,54 @@ function buildPlaceQuery(restaurants) {
 
 function setToEmpty() {
   return "";
+}
+
+function setResultsLabel(query) {
+  return '<h5><b> Results for "' + query + '"</b></h5>';
+}
+
+function validFilteredResult(restaurant, lineLength, placeIdMap) {
+  fourStars = document.getElementById('fourStars').checked;
+  fiveStars = document.getElementById('fiveStars').checked;
+  shortLine = document.getElementById('shortLine').checked;
+  mediumLine = document.getElementById('mediumLine').checked;
+  placeData = placeIdMap[restaurant['placeId']]
+
+  if (fourStars && fiveStars) {
+    if (parseInt(restaurant['rating']) < 4.0) {
+      return false;
+    }
+  } else if (fourStars) {
+    if (parseInt(restaurant['rating']) < 4.0) {
+      return false;
+    }
+  } else if (fiveStars) {
+    if (parseInt(restaurant['rating']) < 4.5) {
+      return false;
+    }
+  }
+
+  if (shortLine && mediumLine) {
+    if (parseInt(lineLength) > 12) {
+      return false;
+    }
+  } else if (shortLine) {
+    if (parseInt(lineLength) > 5) {
+      return false;
+    }
+  } else if (mediumLine) {
+    if (parseInt(lineLength) > 12) {
+      return false;
+    }
+  }
+
+  if (placeData['openingHours']) {
+    if (!placeData['openingHours'].openNow) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function buildStars(rating) {
@@ -107,6 +149,9 @@ function getColor(volumeData) {
 }
 
 function buildLine(volumeData, color) {
+  if (volumeData == 0) {
+    return '<div><p>No Line!</p></div>'
+  }
   line = "<div>";
 
   for (i = 0; i < volumeData; i++) {
@@ -128,7 +173,7 @@ function buildRestaurantCard(restaurant, stars, lineLength, placeIdMap) {
 
 function buildCollapsibleCard(placeId, placeIdMap) {
   return '<a data-toggle="collapse" href="#' + placeId + '" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link">'
-    + '<i class="fa fa-angle-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
+    + '<i class="fas fa-caret-down"></i></a>' + '<div class="collapse" id="' + placeId + '">'
     + '<div class="card card-body">' + buildInformationSection(placeIdMap[placeId]) + '</div></div>';
 }
 
@@ -168,11 +213,47 @@ function buildOpeningHoursSection(hourData) {
 }
 
 function buildPhoneSection(phoneData) {
-  return '<div class="mt-1 mb-1 card-link"> <a href="tel:' + parseInt(phoneData)
+  return '<div class="mt-1 mb-1 card-link"> <a href="tel:' + parseInt(phoneData, 10)
     + '">' + phoneData + '</a></div>';
 }
 
 function buildWebsiteSection(websiteData) {
   return '<div> <a href="' + websiteData
     + '" class="btn btn-primary"> Go To Website </a></div>';
+}
+
+function buildFiltersMenu() {
+  return `<h5><b> Filters </b></h5>
+					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-primary">
+              <input type="checkbox" autocomplete="off" id="fourStars">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </label>
+						<label class="btn btn-primary">
+              <input type="checkbox" autocomplete="off" id="fiveStars"> 
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </label>
+					</div>
+					<div class="m-1 btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-success">
+              <input type="checkbox" autocomplete="off" id="shortLine">
+              <i class="fa fa-user" aria-hidden="true"></i>
+            </label>
+						<label class="btn btn-warning">
+              <input type="checkbox" autocomplete="off" id="mediumLine">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </label>
+					</div>
+					<div class="m-1 custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" id="openNow">
+						<label class="custom-control-label" for="openNow"> Open Now </label>
+					</div> `;
 }
