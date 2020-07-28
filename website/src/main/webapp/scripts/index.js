@@ -16,7 +16,6 @@ async function getQueue(initialSearch) {
       return restaurantsData['results'];
     });
 
-
   volumeData = await fetch('/MockData')
 
     .then(response => response.json())
@@ -28,19 +27,7 @@ async function getQueue(initialSearch) {
         });
         return volData;
       });
-<<<<<<< HEAD
-    console.log(volumeData);
-    
-    const refresh = await fetch('/RefreshData')//new
-    .then(response => response.json())
-    .then((refreshData) => {
-      return refreshData;
-    });
-     console.log(refresh);
-     
-  volumeDataIndex = 1;
-=======
->>>>>>> master
+
 
   placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
     .then(response => response.json())
