@@ -43,17 +43,18 @@ protected DatastoreService datastore = DatastoreServiceFactory.getDatastoreServi
 protected PreparedQuery results;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-     /* int cntr = 0;
+    /*
+      int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
     restaurantEntity.setProperty("idNum", cntr);
     restaurantEntity.setProperty("timestamp", timestamp);
-    restaurantEntity.setProperty("openOrderVolume", getRandom());
+    restaurantEntity.setProperty("openOrderVolume", volumes[i]);
     datastore.put(restaurantEntity);
     cntr++;
-    }*/
+    }
+    */
     
     Query query = new Query("Restaurant").addSort("idNum", SortDirection.ASCENDING);
     results = datastore.prepare(query);

@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DetailedRequestServlet extends HttpServlet {
 
   protected GeoApiContext context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-    .apiKey("<insertAPIKeyHere>")
+    .apiKey("<API key here>")
     .build();
   private HashMap<String,PlaceDetails> places =new HashMap<String,PlaceDetails>();
 
