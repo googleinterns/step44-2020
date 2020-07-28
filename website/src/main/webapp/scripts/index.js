@@ -29,6 +29,8 @@ async function getQueue(initialSearch) {
       });
 
 
+
+
   placeIdMap = await fetch('/detailedRequest?placeID=' + buildPlaceQuery(restaurants))
     .then(response => response.json())
     .then((placeServletData) => {
