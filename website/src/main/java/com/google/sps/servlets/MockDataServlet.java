@@ -15,9 +15,6 @@
 package com.google.sps.servlets;
 
 import java.util.Random;
-import java. util. Collections;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -27,7 +24,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
-import java.util.Arrays;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Date;
@@ -44,15 +40,13 @@ protected PreparedQuery results;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     /*
-      int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("idNum", cntr);
+    restaurantEntity.setProperty("idNum", i);
     restaurantEntity.setProperty("timestamp", timestamp);
     restaurantEntity.setProperty("openOrderVolume", volumes[i]);
     datastore.put(restaurantEntity);
-    cntr++;
     }
     */
     
