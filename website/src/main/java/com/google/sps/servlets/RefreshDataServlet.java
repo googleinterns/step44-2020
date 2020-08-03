@@ -26,7 +26,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
-import java.util.Arrays;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Date;
@@ -35,7 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Scanner;
-import java.util.Random;
+
 
 @WebServlet("/RefreshData")
 public class RefreshDataServlet extends HttpServlet {
@@ -54,11 +53,13 @@ public class RefreshDataServlet extends HttpServlet {
         entity.setProperty("timestamp", timestamp);
         long newOrderVolume = (long) entity.getProperty("openOrderVolume");
         newOrderVolume+=(long)getRandomChange();
+        
         if(newOrderVolume>= 30){
             newOrderVolume=26;
         }
         else if( newOrderVolume<0){
             newOrderVolume =2;
+        
         }
         entity.setProperty("openOrderVolume", newOrderVolume);
         String message = "orderVolume" + " : " + newOrderVolume;      
