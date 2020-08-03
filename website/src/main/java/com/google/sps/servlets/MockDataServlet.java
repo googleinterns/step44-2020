@@ -44,15 +44,13 @@ protected PreparedQuery results;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     /*
-      int cntr = 0;
     for (int i = 0; i < 20; i++){
     Entity restaurantEntity = new Entity("Restaurant");
     long timestamp = System.currentTimeMillis();
-    restaurantEntity.setProperty("idNum", cntr);
+    restaurantEntity.setProperty("idNum", i);
     restaurantEntity.setProperty("timestamp", timestamp);
     restaurantEntity.setProperty("openOrderVolume", volumes[i]);
     datastore.put(restaurantEntity);
-    cntr++;
     }
     */
     
